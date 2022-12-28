@@ -9,6 +9,10 @@ class Article:
         self.price = article.price.squeeze()
         self.stock = article['in stock'].squeeze()
 
+    def available(self):
+        self.stock = df.loc[df.id == self.id, 'in stock'].squeeze()
+        return self.stock
+
     def buy(self):
         self.stock -= 1
         df.loc[df.id == self.id, 'in stock'] = self.stock
@@ -40,12 +44,13 @@ class Receipt:
 
 
 if __name__ == '__main__':
-    df = pd.read_csv('articles.csv')
+    df = pd.read_csv('articles.csv', dtype={'id': str})
     print(df.to_string(index=False))
-    article_id = int(input('Enter an article to buy: '))
+    article_id = input('Enter an article to buy: ')
     article = Article(article_id=article_id)
     print(article.__dict__)
-    article.buy()
-    print(article.__dict__)
-    receipt = Receipt(article=article)
-    print(receipt.generate())
+    if article.available():
+        article.buy()
+        print(article.__dict__)
+        receipt = Receipt(article=article)
+        print(receipt.generate())
