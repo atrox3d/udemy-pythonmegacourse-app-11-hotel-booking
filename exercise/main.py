@@ -1,6 +1,7 @@
 import pandas as pd
 from fpdf import FPDF
 
+
 class Article:
     def __init__(self, article_id):
         article = df[df.id == article_id]
@@ -14,6 +15,7 @@ class Article:
         return self.stock
 
     def buy(self):
+        self.stock = df.loc[df.id == self.id, 'in stock'].squeeze()
         self.stock -= 1
         df.loc[df.id == self.id, 'in stock'] = self.stock
         df.to_csv('articles.csv', index=False)
