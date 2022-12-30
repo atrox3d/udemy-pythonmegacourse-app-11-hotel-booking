@@ -53,22 +53,36 @@ class CreditCard:
         else:
             return False
 
+
+class SecureCreditCard(CreditCard):
+    def authenticate(self, password):
+        pwd = df_secure.loc[df_secure.number == self.number, 'password'].squeeze()
+        if pwd == password:
+            return True
+        else:
+            return False
+
+
 if __name__ == '__main__':
     df = pd.read_csv('hotels.csv', dtype={'id': str})
     df_cards = pd.read_csv('cards.csv', dtype=str).to_dict(orient='records')
-    # print(df.info())
+    df_secure = pd.read_csv('card_security.csv', dtype=str)
+    print(df_secure.info())
     print(df.to_string(index=False))
     hotel_id = input('Enter id of the hotel: ')
     hotel = Hotel(hotel_id=hotel_id)
     if hotel.available():
         # card_number = input('Enter credit card number: ')
-        card = CreditCard(number='1234')
+        card = SecureCreditCard(number='1234')
         if card.validate(expiration='12/26', holder='JOHN SMITH', cvc='123'):
-            hotel.book()
-            name = input('Enter your name: ')
-            ticket = ReservationTicket(customer_name=name, hotel_object=hotel)
-            receipt = ticket.generate()
-            print(receipt)
+            if card.authenticate(password='mypass'):
+                hotel.book()
+                name = input('Enter your name: ')
+                ticket = ReservationTicket(customer_name=name, hotel_object=hotel)
+                receipt = ticket.generate()
+                print(receipt)
+            else:
+                print('Credit Card authentication failed')
         else:
             print('there was a problem with your payment')
     else:
