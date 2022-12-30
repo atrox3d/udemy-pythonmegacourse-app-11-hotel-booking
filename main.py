@@ -14,9 +14,9 @@ class Hotel:
 
     def available(self):
         """ checks if the hotel is available"""
-        avalaibility = df[df.id == self.hotel_id].available.squeeze()
-        # print(type(avalaibility))
-        if avalaibility == 'yes':
+        availability = df[df.id == self.hotel_id].available.squeeze()
+        # print(type(availability))
+        if availability == 'yes':
             return True
         else:
             return False
@@ -112,4 +112,3 @@ if __name__ == '__main__':
             print('there was a problem with your payment')
     else:
         print('hotel is not free')
-
